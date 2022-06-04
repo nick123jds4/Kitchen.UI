@@ -7,6 +7,8 @@ namespace Kitchen.UI.Data
     {
         public IEnumerable<Order> GetAll()
         {
+
+
             yield return new Order() { FirstName = "Thomas", LastName = "Huber" };
             yield return new Order() { FirstName = "Andy", LastName = "Spencer" };
         }
