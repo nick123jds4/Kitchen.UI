@@ -7,12 +7,13 @@ namespace Kitchen.UI.Tests.Data
     public class OrderRepository_Test
     {
         [Fact]
-        public void GetAll_Success_AsExpected() {
-            var sut = new OrderRepository();
+        public void GetAll_Success_AsExpected()
+        {
+            var sut = new ClientRepository();
 
-            var actual = sut.GetAll();
+            System.Collections.Generic.IEnumerable<Model.Customer> actual = sut.GetAll();
 
-            actual.Should().HaveCount(2);
+            actual.Should().HaveCount(2); 
         }
     }
 }

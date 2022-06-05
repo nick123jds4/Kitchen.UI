@@ -1,19 +1,25 @@
-﻿using Kitchen.Model;
+﻿using Autofac.Features.Indexed;
+using Kitchen.Model;
 using Kitchen.UI.Data;
-using System;
-using System.Collections.Generic;
+using Kitchen.UI.Event;
+using Kitchen.UI.View.Services;
+using Prism.Events;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Kitchen.UI.ViewModel
-{ 
-    public class MainViewModel:ViewModelBase
+{
+    public class MainViewModel : ViewModelBase
     {
-        private Order _selectedOrder;
-        public Order SelectedOrder
+        private IEventAggregator _eventAggregator;
+        private Customer _selectedOrder;
+        private IClientRepository _clientRepository;
+        private IDetailViewModel _selectedDetailViewModel;
+        private IIndex<string, IDetailViewModel> _detailViewModelCreator;
+
+        #region Properies
+        public Customer SelectedOrder
         {
             get { return _selectedOrder; }
             set
@@ -22,28 +28,78 @@ namespace Kitchen.UI.ViewModel
                 OnPropertyChanged();
             }
         }
-        public ObservableCollection<Order> Orders { get; set; }
-         
 
-        private IOrderRepository _orderDataService; 
-        public MainViewModel(IOrderRepository OrderDataService)
+        public IDetailViewModel SelectedDetailViewModel
         {
-            Orders = new ObservableCollection<Order>();
-            _orderDataService = OrderDataService;
+            get { return _selectedDetailViewModel; }
+            set
+            {
+                _selectedDetailViewModel = value;
+                OnPropertyChanged();
+            }
         }
 
+        public ObservableCollection<Customer> Clients { get; set; }
+        public INavigationViewModel NavigationViewModel { get; }
+        public ObservableCollection<IDetailViewModel> DetailViewModels { get; }
+        #endregion
 
-        public void Load()
+        public MainViewModel(IClientRepository clientRepository,
+            INavigationViewModel navigationViewModel,
+            IEventAggregator eventAggregator,
+            IMessageDialogService messageDialogService,
+            IIndex<string, IDetailViewModel> detailViewModelCreator)
         {
+            _clientRepository = clientRepository;
+            _eventAggregator = eventAggregator;
+            _detailViewModelCreator = detailViewModelCreator;
+            Clients = new ObservableCollection<Customer>();
+            DetailViewModels = new ObservableCollection<IDetailViewModel>();
 
-            var orders = _orderDataService.GetAll();
-            Orders.Clear();//чтобы не загружать дважды 
+            _eventAggregator.GetEvent<OpenDetailViewEvent>()
+             .Subscribe(OnOpenDetailView);
+            _eventAggregator.GetEvent<AfterDetailClosedEvent>()
+        .Subscribe(AfterDetailClosed);
 
-            foreach (var item in orders)
+
+            NavigationViewModel = navigationViewModel;
+        }
+
+        private async void OnOpenDetailView(OpenDetailViewEventArgs args)
+        {
+            IDetailViewModel detailViewModel = DetailViewModels
+              .SingleOrDefault(vm => vm.Id == args.Id
+              && vm.GetType().Name == args.ViewModelName);
+
+            if (detailViewModel == null)
             {
-                Orders.Add(item);
+                detailViewModel = _detailViewModelCreator[args.ViewModelName];
+                await detailViewModel.LoadAsync(args.Id);
+                DetailViewModels.Add(detailViewModel);
             }
 
+            SelectedDetailViewModel = detailViewModel;
+        }
+
+        public async Task LoadAsync()
+        {
+            await NavigationViewModel.LoadAsync();
+        }
+
+        private void AfterDetailClosed(AfterDetailClosedEventArgs args)
+        {
+            RemoveDetailViewModel(args.Id, args.ViewModelName);
+        }
+
+        private void RemoveDetailViewModel(int id, string viewModelName)
+        {
+            var detailViewModel = DetailViewModels
+                   .SingleOrDefault(vm => vm.Id == id
+                   && vm.GetType().Name == viewModelName);
+            if (detailViewModel != null)
+            {
+                DetailViewModels.Remove(detailViewModel);
+            }
         }
     }
 }

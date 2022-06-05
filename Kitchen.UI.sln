@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kitchen.Model", "Kitchen.Mo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kitchen.UI.Tests", "Kitchen.UI.Tests\Kitchen.UI.Tests.csproj", "{BEB4F1FD-A535-4DF3-A4ED-28192E860E29}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kitchen.DataAccess", "Kitchen.DataAccess\Kitchen.DataAccess.csproj", "{5E68DE90-9EFF-449A-B71E-595C9FFCCD9C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{BEB4F1FD-A535-4DF3-A4ED-28192E860E29}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BEB4F1FD-A535-4DF3-A4ED-28192E860E29}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BEB4F1FD-A535-4DF3-A4ED-28192E860E29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E68DE90-9EFF-449A-B71E-595C9FFCCD9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E68DE90-9EFF-449A-B71E-595C9FFCCD9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E68DE90-9EFF-449A-B71E-595C9FFCCD9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E68DE90-9EFF-449A-B71E-595C9FFCCD9C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
