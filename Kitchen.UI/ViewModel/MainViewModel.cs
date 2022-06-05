@@ -3,10 +3,13 @@ using Kitchen.Model;
 using Kitchen.UI.Data;
 using Kitchen.UI.Event;
 using Kitchen.UI.View.Services;
+using Prism.Commands;
 using Prism.Events;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace Kitchen.UI.ViewModel
 {
@@ -43,6 +46,8 @@ namespace Kitchen.UI.ViewModel
         public INavigationViewModel NavigationViewModel { get; }
         public ObservableCollection<IDetailViewModel> DetailViewModels { get; }
         #endregion
+        public ICommand CreateNewDetailCommand { get; }
+
 
         public MainViewModel(IClientRepository clientRepository,
             INavigationViewModel navigationViewModel,
@@ -61,6 +66,7 @@ namespace Kitchen.UI.ViewModel
             _eventAggregator.GetEvent<AfterDetailClosedEvent>()
         .Subscribe(AfterDetailClosed);
 
+            CreateNewDetailCommand = new DelegateCommand<Type>(OnCreateNewDetailExecute);
 
             NavigationViewModel = navigationViewModel;
         }
@@ -100,6 +106,17 @@ namespace Kitchen.UI.ViewModel
             {
                 DetailViewModels.Remove(detailViewModel);
             }
+        }
+
+        private int nextNewItemId = 0;
+        private void OnCreateNewDetailExecute(Type viewModelType)
+        {
+            OnOpenDetailView(
+              new OpenDetailViewEventArgs
+              {
+                  Id = nextNewItemId--,
+                  ViewModelName = viewModelType.Name
+              });
         }
     }
 }

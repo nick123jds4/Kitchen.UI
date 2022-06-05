@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Kitchen.UI.Data;
 using Kitchen.UI.Data.Lookups;
+using Kitchen.UI.Data.Repositories;
 using Kitchen.UI.View;
 using Kitchen.UI.View.Services;
 using Kitchen.UI.ViewModel;
@@ -22,6 +23,7 @@ namespace Kitchen.UI.Startup
             builder.RegisterType<NavigationViewModel>().As<INavigationViewModel>();
             builder.RegisterType<ClientRepository>().As<IClientRepository>();
             builder.RegisterType<LookupDataService>().AsImplementedInterfaces();
+            builder.RegisterType<MeetingRepository>().As<IMeetingRepository>();
 
             builder.RegisterType<FriendDetailViewModel>().Keyed<IDetailViewModel>(nameof(FriendDetailViewModel));
             builder.RegisterType<MeetingDetailViewModel>().Keyed<IDetailViewModel>(nameof(MeetingDetailViewModel));

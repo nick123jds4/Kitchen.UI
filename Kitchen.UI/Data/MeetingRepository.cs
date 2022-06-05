@@ -41,12 +41,12 @@ namespace Kitchen.UI.Data.Repositories
 
         public bool HasChanges()
         {
-            throw new System.NotImplementedException();
+            return false;
         }
 
         public void Add(Meeting model)
         {
-            throw new System.NotImplementedException();
+            meetings.Add(model);
         }
 
         public void Remove(Meeting model)
